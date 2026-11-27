@@ -24,6 +24,10 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    GREENHOUSE_BOARDS: dict[str, str] = {}
+
+    INGESTION_INTERVAL_SECONDS: int = 21600
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -38,6 +38,72 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+
+    image: careerpilot-worker:dev
+
+    container_name: careerpilot-worker
+
+    command:
+      - celery
+      - -A
+      - app.workers.celery_app:celery_app
+      - worker
+      - --loglevel=info
+      - --concurrency=2
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379/0
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+      redis:
+        condition: service_healthy
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+
+    image: careerpilot-worker:dev
+
+    container_name: careerpilot-beat
+
+    command:
+      - celery
+      - -A
+      - app.workers.celery_app:celery_app
+      - beat
+      - --loglevel=info
+      - --schedule=/tmp/celerybeat-schedule
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379/0
+
+    depends_on:
+      worker:
+        condition: service_started
+
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:

@@ -11,3 +11,4 @@ redis
 celery[redis]
 httpx
 pytest
+beautifulsoup4

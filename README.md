@@ -41,7 +41,12 @@ http://localhost:8000/docs
 - [x] SQLAlchemy models
 - [x] Alembic migrations
 - [x] FastAPI health endpoints
-- [ ] Job ingestion pipeline
+- [x] External job API integration
+- [x] Automated job ingestion pipeline
+- [x] Job deduplication and upserts
+- [x] Celery workers and periodic scheduling
+- [x] Job listing REST APIs
+- [ ] Embedding generation
 - [ ] Hybrid search
 - [ ] Recommendation engine
 - [ ] LangGraph agent
